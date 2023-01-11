@@ -8,13 +8,14 @@ let valor
 let sumaTotal
 let descuentos
 let abonar
-const porcentajeDescontado = 0.30
+const IVA = 0.21
 let reiniciar = producto
 
 function saludo()   {
     let inicio = "BIENVENIDO, COMENCEMOS TU PRESUPUESTO!!!"
     alert(inicio)
 }
+
 saludo()
 
 // VALORES
@@ -49,13 +50,13 @@ if (sumaTotal == unidades * valor)  {
     alert(" La suma total de " + unidades + " unidades es: $" + sumaTotal)
 }
 
-descuentos = sumaTotal * porcentajeDescontado
-if(descuentos == sumaTotal * porcentajeDescontado)  {
-    alert(" Aplicando un descuento del 30%.")
+descuentos = sumaTotal * IVA
+if(descuentos == sumaTotal * IVA)  {
+    alert(" Aplicando impuestos (IVA)")
 }
 
-abonar = sumaTotal - descuentos
-if (abonar == sumaTotal - descuentos) {
+abonar = sumaTotal + descuentos
+if (abonar == sumaTotal + descuentos) {
     alert(" El total a abonar es de: $" + abonar)
 }
    
@@ -69,6 +70,20 @@ document.write("<br> Producto: " + producto)
 document.write("<br> Unidades: " + unidades)
 document.write("<br> Precio unitario: $" + valor)
 document.write("<br> Total $" + sumaTotal)
-document.write("<br> Descuento del 30%:-$" + descuentos)
+document.write("<br> IVA:+$" + descuentos)
 document.write("<br> El total a abonar es de: $" + abonar)
+
+
+
+// FUNCION CONSTRUCTORA (PRODUCTOS)
+// function product(nombre,precio,stock)   {
+//     this.nombre = nombre
+//     this.precio = precio
+//     this.stock = stock
+// }
+
+// PRODUCTOS
+// let producto1 = new product("coca-cola 1L",400,10)
+// let producto2 = new product("fernet branca 450ml",950,5)
+// let producto3 = new product("sprite 2.25L",650,10)
 
