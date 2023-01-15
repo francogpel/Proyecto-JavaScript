@@ -2,6 +2,7 @@
 
 
 // VARIABLES
+const fecha = new Date ()
 let producto
 let unidades
 let valor
@@ -12,7 +13,7 @@ const IVA = 0.21
 let reiniciar = producto
 
 function saludo()   {
-    let inicio = "BIENVENIDO, COMENCEMOS TU PRESUPUESTO!!!"
+    let inicio = "BIENVENIDO!!!"
     alert(inicio)
 }
 
@@ -21,7 +22,7 @@ saludo()
 // VALORES
 while(reiniciar != 0)    {
     
-producto = prompt("Ingrese el nombre del producto a presupuestar")
+producto = prompt("Ingrese el nombre del producto a facturar")
 if (producto == "" )  {
     alert("No ingreso el producto")
 }
@@ -52,38 +53,54 @@ if (sumaTotal == unidades * valor)  {
 
 descuentos = sumaTotal * IVA
 if(descuentos == sumaTotal * IVA)  {
-    alert(" Aplicando impuestos (IVA)")
+    // alert(" Aplicando impuestos (IVA)")
 }
 
 abonar = sumaTotal + descuentos
 if (abonar == sumaTotal + descuentos) {
-    alert(" El total a abonar es de: $" + abonar)
+    alert(" TOTAL (+ IVA) : $" + abonar)
+
 }
-   
-    alert(" Presupuesto finalizado ")
-    reiniciar = prompt(" Ingrese 0 para visualizar los detalles del presupuesto \n Ingrese 1 para presupuestar otro producto" )
+    reiniciar = prompt(" FACTURACION FINALIZADA \n Ingrese 0 para visualizar los detalles de la factura \n Ingrese 1 para facturar otro producto" )
 }
 
+
 // DETALLES
-document.write("<br> TU PRESUPUESTO")
+document.write("<br> DETALLES")
+document.write("<br> fecha: " + fecha.toLocaleString())
 document.write("<br> Producto: " + producto)
 document.write("<br> Unidades: " + unidades)
 document.write("<br> Precio unitario: $" + valor)
-document.write("<br> Total $" + sumaTotal)
+document.write("<br> Suma total $" + sumaTotal)
 document.write("<br> IVA:+$" + descuentos)
-document.write("<br> El total a abonar es de: $" + abonar)
+document.write("<br> Total: $" + abonar)
 
+// (CARGAR PRODUCTOS)
 
+function cargar() {
+    
+    function producto(nombre,precio,stock,categoria)   {
+        this.nombre = nombre
+        this.precio = precio
+        this.stock = stock
+        this.categoria = categoria
+        
+    }
+    let capturarNombre = document.getElementById("nombre").value;
+    let capturarPrecio = document.getElementById("precio").value;
+    let capturarStock = document.getElementById("stock").value;
+    let capturarCategoria = document.getElementById("categoria").value;
+    
+    nuevoProducto = new producto(capturarNombre, capturarPrecio, capturarStock, capturarCategoria)
+    console.log(nuevoProducto)
+    cargarProducto();
+}
 
-// FUNCION CONSTRUCTORA (PRODUCTOS)
-// function product(nombre,precio,stock)   {
-//     this.nombre = nombre
-//     this.precio = precio
-//     this.stock = stock
-// }
-
-// PRODUCTOS
-// let producto1 = new product("coca-cola 1L",400,10)
-// let producto2 = new product("fernet branca 450ml",950,5)
-// let producto3 = new product("sprite 2.25L",650,10)
+// ARRAY 
+const dataBase = []
+function cargarProducto()   {
+    dataBase.push(nuevoProducto)
+    console.log(dataBase)
+    document.getElementById("tabla").innerHTML += '<tbody><td>'+ nuevoProducto.nombre +'</td><td>'+ "$" + nuevoProducto.precio +'</td><td>'+ nuevoProducto.stock +'</td><td>'+ nuevoProducto.categoria +'</td></tbody>'
+}
 
