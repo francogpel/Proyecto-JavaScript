@@ -79,28 +79,91 @@ document.write("<br> Total: $" + abonar)
 
 function cargar() {
     
-    function producto(nombre,precio,stock,categoria)   {
+    function producto(nombre,precio,stock,categoria,codigo)   {
         this.nombre = nombre
         this.precio = precio
         this.stock = stock
         this.categoria = categoria
-        
+        this.codigo = codigo
     }
+    // FORMULARIO DE CARGA
     let capturarNombre = document.getElementById("nombre").value;
-    let capturarPrecio = document.getElementById("precio").value;
+    let capturarPrecio = document.getElementById ("precio").value;
     let capturarStock = document.getElementById("stock").value;
     let capturarCategoria = document.getElementById("categoria").value;
+    let capturarCodigo = document.getElementById("codigo").value;
     
-    nuevoProducto = new producto(capturarNombre, capturarPrecio, capturarStock, capturarCategoria)
+
+    nuevoProducto = new producto(capturarNombre, parseFloat(capturarPrecio), parseInt(capturarStock), capturarCategoria, capturarCodigo)
     console.log(nuevoProducto)
     cargarProducto();
+
+   
 }
 
-// ARRAY 
+
+
+// ARRAY - DOM
 const dataBase = []
+
+function traerProductosLocalStorage()   {
+    dataBase = JSON.parse(localStorage.getItem("producto"))
+}
+
 function cargarProducto()   {
     dataBase.push(nuevoProducto)
     console.log(dataBase)
-    document.getElementById("tabla").innerHTML += '<tbody><td>'+ nuevoProducto.nombre +'</td><td>'+ "$" + nuevoProducto.precio +'</td><td>'+ nuevoProducto.stock +'</td><td>'+ nuevoProducto.categoria +'</td></tbody>'
+    document.getElementById("tabla").innerHTML += '<tbody><td>'+ nuevoProducto.nombre +'</td><td>'+ "$" + nuevoProducto.precio +'</td><td>'+ nuevoProducto.stock +'</td><td>'+ nuevoProducto.categoria +'</td><td>'+ nuevoProducto.codigo +'</td></tbody>'
+
+   localStorage.setItem("producto",JSON.stringify(dataBase));
+}
+// BOTON DE CARGA
+const carga = document.getElementById("botonCargar")
+
+// EVENTOS
+
+const casilleros = document.getElementById("categoria")
+
+carga.addEventListener("click", cargar)
+
+let clickCargar = "click"
+carga.addEventListener(clickCargar, cargar)
+
+casilleros.addEventListener("click", () => {
+    casilleros.style.backgroundColor = "#B9F3FC"
+})
+
+
+//  (BUSCAR PRODUCTOS)
+
+     // FORMULARIO DE BUSQUEDA
+     let buscarNombre = document.getElementById("buscarNombre").value;
+     let buscarCodigo = document.getElementById("buscarCodigo").value;
+     // BOTON DE BUSQUEDA
+     const botonBuscar = document.getElementById("botonBuscar")
+
+     
+
+    botonBuscar.addEventListener("click", buscarProductos)
+
+    function buscarProductos()
+        {
+            let porNombre = buscarNombre;
+            let elProducto = buscarProducto(porNombre)
+            if(elProducto != undefined)
+            {
+               
+                     document.getElementById("tabla2").innerHTML += '<tbody><td>'+ elProducto.nombre +'</td><td>' + "$" + elProducto.precio +'</td><td>'+ elProducto.stock +'</td><td>'+ elProducto.categoria +'</td><td>'+ elProducto.codigo +'</td></tbody>'
+               
+            }
+            else    {
+                    alert("Producto no encontrado")
+                }  
+        }
+
+function buscarProducto(porNombre)  {
+          return dataBase.find((elProducto) => {
+            return elProducto.capturarNombre == porNombre;
+          })
 }
 
