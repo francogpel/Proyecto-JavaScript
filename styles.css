@@ -73,3 +73,35 @@
 .nav-item   {
     margin: 0px 5px;
 }
+
+.total      {
+    background-color: rgba(255, 0, 0, 0.535);
+}
+
+.botonTicke {
+    margin: 10px 10px;
+    display: flex;
+    float: right;
+}
+
+.usuario    {
+    color: white;
+}
+
+.divisas    {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    background-color: greenyellow;
+}
+
+footer  {
+    margin-top: 60px;
+    background-color: rgb(72, 72, 222);
+    padding: 10px 20px;
+}
+
+.ig {
+    color: black;
+    text-decoration: none;
+}

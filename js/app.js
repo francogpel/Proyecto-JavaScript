@@ -59,14 +59,45 @@ function cargar()
     }
 
 
- botonCargar.addEventListener("click", cargar )
+//  botonCargar.addEventListener("click", cargar )
  let clickCargar = "click"
  botonCargar.addEventListener(clickCargar, cargar)
 
 
 
-    // guardar productos en el localStorage
-localStorage.setItem("productos",JSON.stringify(DEPOSITO));
+// CARGAR PRODUCTOS DESDE EL LOCALSTORAGE
+window.onload = function() {
+  if (localStorage.getItem("productos")) {
+    DEPOSITO = JSON.parse(localStorage.getItem("productos"));
+    cargarTablaDeposito();
+  }
+};
+
+// FUNCIÓN PARA CARGAR LA TABLA DEL DEPOSITO
+function cargarTablaDeposito() {
+  let tablaDepositoHTML = "";
+  for (let i = 0; i < DEPOSITO.length; i++) {
+    let producto = DEPOSITO[i];
+    tablaDepositoHTML +=
+      "<tr><td>" +
+      producto.nombre +
+      "</td><td>" +
+      "$" +
+      producto.precio +
+      "</td><td>" +
+      producto.stock +
+      "</td><td>" +
+      producto.categoria +
+      "</td><td>" +
+      producto.codigo +
+      "</td></tr>";
+  }
+  tablaDeposito.innerHTML = tablaDepositoHTML;
+}
+
+
+
+
 
 
 // BOTON VACIAR STOCK
@@ -108,7 +139,7 @@ function actualizarTablaDeposito()  {
 
 
 
-// BUSQUEDA DE PRODUCTOS
+// SELECCIONADO DE PRODUCTOS
 
 window.addEventListener("DOMContentLoaded", traerItemStock)
 
@@ -129,7 +160,7 @@ function traerItemStock () {
     popularDropdown()
     carrito = JSON.parse(localStorage.getItem("carrito")) || []
     actualizarTablaCarrito()
-    // actualizarTablaDeposito()
+    actualizarTablaDeposito()
 
 }
 
@@ -145,107 +176,98 @@ function actualizarTablaCarrito()  {
 
 
 
-// FUNCION MOSTRAR PRODUCTOS EN CARRITO (SECUNDARIA)
-
-function cargarCarrito()    {
-    const productSeleccionado = new item(selectProducto.value)
-    console.log(productSeleccionado)
-    cargarCarritoTabla()
-
-    function cargarCarritoTabla()   {
-        carrito.push(productSeleccionado)
-        console.log(carrito)
-        document.getElementById("items").innerHTML += '<tbody id=items><td>'+ productSeleccionado.nombre +'</td><td>'+ "$" + productSeleccionado.precio +'</td><td>'+ productSeleccionado.cantidad +'</td><td>'+ "X" +'</td></tbody>'
-    
-        localStorage.setItem("Carrito",JSON.stringify(carrito));
-        
-    }
-}
-botonBuscar.addEventListener("click", cargarCarrito )
-let clickBusca = "click"
-botonBuscar.addEventListener(clickBusca, cargarCarrito)
-
-localStorage.setItem("Carrito",JSON.stringify(carrito));
 
 
 
-// botonBuscar.addEventListener('submit', (e) =>
-// {
-//   e.preventDefault(); ///no refresh
-//   const productoSeleccionado = DEPOSITO[selectProducto.value];
-//   if (carrito.find((item) => {return item.producto.nombre === productoSeleccionado.nombre}) === undefined)
-//   {
-//     const nuevoItem = new item(productoSeleccionado,1);
-//     carrito.push(nuevoItem);
-//     localStorage.setItem('Carrito',JSON.stringify(carrito)); 
-//     newRow(nuevoItem);
-//   }
+// FUNCION MOSTRAR PRODUCTOS EN CARRITO 
 
-// });
+document.getElementById("items").addEventListener("click", function(event) {
+  if (event.target.id === "eliminarProducto") {
+    const nombreProducto = event.target.parentNode.parentNode.firstChild.textContent;
+    const indexProducto = carrito.findIndex(producto => producto.nombre === nombreProducto);
+    carrito.splice(indexProducto, 1);
+    event.target.parentNode.parentNode.remove();
+    localStorage.setItem("Carrito", JSON.stringify(carrito));
+  }
+});
 
 
-//  function newRow(item)   {
-//       const fila = document.createElement("tr");
-//       let td = document.createElement('td');
-//       const posCarrito = carrito.indexOf(item);
+ carrito = JSON.parse(localStorage.getItem("Carrito")) || [];
 
-//       td.textContent = item.producto.nombre;
-//       fila.appendChild(td);
-
-//       td = document.createElement('td');
-//       td.textContent = item.producto.precio;
-//       fila.appendChild(td);
-
-//       td = document.createElement('td');
-//       td.textContent = item.cantidad;
-//       fila.appendChild(td);
-//      masUidades.onclick = () => {
-//          carrito[posCarrito].cantidad++;
-//          actualizarTablaCarrito();
-//          localStorage.setItem('carrito',JSON.stringify(carrito));
-//      }
-
-//      menosUidades.onclick = () => {
-//          if (carrito[posCarrito].cantidad > 1)
-//          {
-//              carrito[posCarrito].cantidad--;
-//          }
-//          else
-//          {
-//            carrito.splice(posCarrito,1);
-//          }
-//           actualizarTablaCarrito();
-//          localStorage.setItem("carrito",JSON.stringify(carrito));
-//      }
-
-//      td.appendChild(masUidades);
-//      td.appendChild(menosUidades);
-    
-
-//      td = document.createElement("td");
-//      td.textContent = item.producto.precio;
-
-//     fila.appendChild(td);
-
-//      const botonQuitar = document.createElement("button");
-//      botonQuitar.className = "btn btn-danger";
-//      botonQuitar.innerText = "Eliminar";
+class Item {
+  constructor(nombre, precio, cantidad) {
+    this.nombre = nombre;
+    this.precio = precio;
+    this.cantidad = cantidad;
+  }
   
-//      botonQuitar.onclick = () => 
-//      {
-//          carrito.splice(posCarrito,1);
-//          actualizarTablaCarrito();
-//          localStorage.setItem("Carrito",JSON.stringify(carrito));
-//      }
-    
-//      td = document.createElement("td")
-//      td.appendChild(botonQuitar);
-//      fila.appendChild(td);
-//      tabla.appendChild(fila);
+  TOTAL() {
+    return this.cantidad * this.producto.precio
+}
+}
 
-//      TOTAL.innerText = carrito.reduce((acumulador,item) => acumulador + item.producto.precio * item.cantidad,0);
+function cargarCarrito() {
+  const selectProducto = document.getElementById("selectProducto");
+  const productoSeleccionado = new Item(selectProducto.value, selectProducto.dataset.precio, 1);
 
-//  }
+  const productoEnCarrito = carrito.find(producto => producto.nombre === productoSeleccionado.nombre);
+
+  if (productoEnCarrito) {
+    productoEnCarrito.precio;
+    productoEnCarrito.cantidad++;
+  } else {
+    carrito.push(productoSeleccionado);
+  }
+
+  mostrarCarrito();
+  guardarCarritoEnLocalStorage();
+}
+
+function mostrarCarrito() {
+  const tablaItems = document.getElementById("items");
+  tablaItems.innerHTML = "";
+
+  carrito.forEach(producto => {
+    const fila = document.createElement("tr");
+
+    fila.innerHTML = `
+      <td>${producto.nombre}</td>
+      <td>$${producto.precio}</td>
+      <td>${producto.cantidad}</td>
+      <td><button class="btn btn-danger" data-producto="${producto.nombre}">Quitar</button></td>
+    `;
+
+    tablaItems.appendChild(fila);
+  });
+}
+
+function guardarCarritoEnLocalStorage() {
+  localStorage.setItem("Carrito", JSON.stringify(carrito));
+}
+
+function eliminarProductoDelCarrito(nombreProducto) {
+  carrito = carrito.filter(producto => producto.nombre !== nombreProducto);
+  mostrarCarrito();
+  guardarCarritoEnLocalStorage();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  mostrarCarrito();
+
+  const botonBuscar = document.getElementById("botonBuscar");
+  botonBuscar.addEventListener("click", cargarCarrito);
+
+  const tablaItems = document.getElementById("items");
+  tablaItems.addEventListener("click", e => {
+    if (e.target.tagName === "BUTTON") {
+      const nombreProducto = e.target.dataset.producto;
+      eliminarProductoDelCarrito(nombreProducto);
+    }
+  });
+});
+
+
+
 
 
 
@@ -276,6 +298,58 @@ btnVaciar.onclick = () =>
     }
  })
 }
+
+
+
+
+
+
+// API DE DIVISAS
+// DOLAR OFI
+
+fetch('https://api.exchangerate-api.com/v4/latest/USD?apikey=3f2a05c0d856fca32f2538da')
+  .then(response => response.json())
+  .then(data => {
+    let rate = data.rates.ARS;
+    document.getElementById('exchange-rate').innerHTML = `1 USD OFICIAL = $ ${rate} ARS`;
+  })
+  .catch(error => console.error(error));
+
+  // DOLAR CRIPTO
+
+  fetch('https://api.exchangerate-api.com/v4/latest/USD?apikey=3f2a05c0d856fca32f2538da')
+  .then(response => response.json())
+  .then(data => {
+    let rate = data.rates.ARS;
+    let blueRate = rate * 195 / 100; 
+    document.getElementById('exchange-rate-blue').innerHTML = `1 USD BLUE = $ ${blueRate.toFixed(2)} ARS`;
+  })
+  .catch(error => console.error(error));
+
+
+
+  // EURO
+
+  fetch('https://api.exchangerate-api.com/v4/latest/EUR?apikey=3f2a05c0d856fca32f2538da')
+  .then(response => response.json())
+  .then(data => {
+    let rate = data.rates.ARS;
+    document.getElementById('exchange-rate-euro').innerHTML = `1 EUR = $ ${rate} ARS`;
+  })
+  .catch(error => console.error(error));
+
+  // REAL
+
+  fetch('https://api.exchangerate-api.com/v4/latest/BRL?apikey=3f2a05c0d856fca32f2538da')
+  .then(response => response.json())
+  .then(data => {
+    let rate = data.rates.ARS;
+    document.getElementById('exchange-rate-real').innerHTML = `1 REAL = $ ${rate} ARS`;
+  })
+  .catch(error => console.error(error));
+
+
+
 
 
 
